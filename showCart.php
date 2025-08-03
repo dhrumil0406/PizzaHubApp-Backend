@@ -1,20 +1,26 @@
 <?php
-
-require_once 'db.php'; // Include your database connection (PDO $db expected)
+require_once 'db.php';
 
 try {
     $userId = $_REQUEST['userid'] ?? 0;
 
-    // Fetch cart items for the logged-in user
-    $stmt = $db->prepare("SELECT * FROM pizza_carts WHERE userid = :userId");
+    // Join pizza_carts with pizzas to get full pizza details
+    $stmt = $db->prepare("
+        SELECT c.cartitemid, c.userid, c.pizzaid, c.quantity, c.catid, c.itemadddate,
+               p.pizzaname, p.pizzaprice, p.pizzaimage, p.discount
+        FROM pizza_carts c
+        JOIN pizza_items p ON c.pizzaid = p.pizzaid
+        WHERE c.userid = :userId
+    ");
     $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
     $stmt->execute();
     $cartItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
     if (empty($cartItems)) {
         echo json_encode([
             'status' => 'error',
             'message' => 'No items found in the cart.',
-            'data' => [] // Return empty data array
+            'data' => []
         ]);
         exit();
     }
@@ -29,7 +35,7 @@ try {
     echo json_encode([
         'status' => 'error',
         'message' => 'Server error: ' . $e->getMessage(),
-        'data' => [] // Return empty data array on error
+        'data' => []
     ]);
     exit();
 }

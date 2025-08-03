@@ -3,7 +3,7 @@ require_once 'db.php'; // Include your PDO connection in $db
 
 try {
     $userId = $_REQUEST['userid'] ?? 0;
-    $catId = isset($_POST['catid']) ? intval($_POST['catid']) : 0;
+    $catId = isset($_REQUEST['catid']) ? intval($_REQUEST['catid']) : 0;
 
     if ($catId <= 0) {
         echo json_encode([

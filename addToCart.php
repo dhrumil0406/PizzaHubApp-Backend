@@ -3,7 +3,7 @@ require_once 'db.php'; // Include your database connection (PDO $db expected)
 
 try {
     $userId = $_REQUEST['userid'] ?? 0;
-    $pizzaId = isset($_POST['pizzaid']) ? intval($_POST['pizzaid']) : 0;
+    $pizzaId = isset($_REQUEST['pizzaid']) ? intval($_REQUEST['pizzaid']) : 0;
 
     if ($pizzaId <= 0) {
         echo json_encode([
