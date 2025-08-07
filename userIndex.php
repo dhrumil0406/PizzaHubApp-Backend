@@ -7,13 +7,13 @@ $categoryId = isset($_REQUEST['category_id']) ? intval($_REQUEST['category_id'])
 try {
     if ($categoryId === 0) {
         // Show all categories ordered by iscombo
-        $stmt = $db->prepare("SELECT * FROM categories ORDER BY iscombo ASC");
+        $stmt = $db->prepare("SELECT *,discount As catdiscount FROM categories ORDER BY iscombo ASC");
     } elseif ($categoryId === 3) {
         // Show combo categories
-        $stmt = $db->prepare("SELECT * FROM categories WHERE iscombo = 1");
+        $stmt = $db->prepare("SELECT *,discount As catdiscount FROM categories WHERE iscombo = 1");
     } else {
         // Show categories matching cattype veg or non-veg, not combo
-        $stmt = $db->prepare("SELECT * FROM categories WHERE cattype = :cattype AND iscombo = 0");
+        $stmt = $db->prepare("SELECT *,discount As catdiscount FROM categories WHERE cattype = :cattype AND iscombo = 0");
         $stmt->bindParam(':cattype', $categoryId);
     }
 

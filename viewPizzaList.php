@@ -7,9 +7,9 @@ $categoryId = isset($_REQUEST['categoryId']) ? intval($_REQUEST['categoryId']) :
 try {
     // Query based on categoryId
     if ($categoryId === 0) {
-        $stmt = $conn->prepare("SELECT * FROM pizza_items");
+        $stmt = $conn->prepare("SELECT *,discount As pizzadiscount FROM pizza_items");
     } else {
-        $stmt = $db->prepare("SELECT * FROM pizza_items WHERE catid = :categoryId");
+        $stmt = $db->prepare("SELECT *,discount As pizzadiscount FROM pizza_items WHERE catid = :categoryId");
         $stmt->bindValue(':categoryId', $categoryId, PDO::PARAM_INT);
     }
 
