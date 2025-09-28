@@ -1,0 +1,16 @@
+# Ignore vendor (Composer dependencies)
+/vendor/
+
+# Ignore invoices (generated PDFs)
+/invoices/
+
+# Ignore environment and config files
+.env
+db.php
+
+# Ignore composer lock if you want
+composer.lock
+
+# Ignore system files
+.DS_Store
+Thumbs.db
