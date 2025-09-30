@@ -197,7 +197,7 @@ try {
             'orderid'        => $orderid,
             'final_amount'   => $finalAmount,
             'trackid'        => $trackid,
-            'pdf_url'      => "http://127.0.0.1/pizzahubapp/order_invoice_generate.php?orderid=" . urlencode($orderid)
+            'pdf_url'      => "http://127.0.0.1:8000/order-download/".urlencode($orderid)
         ]
     ]);
 } catch (Exception $e) {

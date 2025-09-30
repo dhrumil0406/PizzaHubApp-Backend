@@ -1,22 +1,22 @@
 <?php
 require 'vendor/autoload.php';
-require 'db.php'; // your database connection
+require 'db.php';
 
 use Dompdf\Dompdf;
 
-// Example: Fetch order details (replace with actual query)
 $orderId = $_GET['orderid'] ?? 0;
 
-// ---- Fetch Data from DB ----
+// Fetch order details
 $stmt = $db->prepare("SELECT * FROM orders WHERE orderid = ?");
 $stmt->execute([$orderId]);
 $orderDetails = $stmt->fetch(PDO::FETCH_ASSOC);
 
+// Fetch order items
 $stmt = $db->prepare("SELECT * FROM order_items WHERE orderid = ?");
 $stmt->execute([$orderId]);
 $orderItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Example: fetch payment details if needed
+// Fetch payment details if exists
 $paymentDetails = [];
 if (!empty($orderDetails['paymentid'])) {
     $stmt = $db->prepare("SELECT * FROM payments WHERE paymentid = ?");
@@ -24,20 +24,20 @@ if (!empty($orderDetails['paymentid'])) {
     $paymentDetails = $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
-// ---- Load invoice template ----
+// Render template into HTML
 ob_start();
 include "order_invoice_template.php";
 $html = ob_get_clean();
 
-// ---- Generate PDF ----
+// Generate PDF
 $dompdf = new Dompdf();
 $dompdf->loadHtml($html);
 $dompdf->setPaper('A4', 'portrait');
 $dompdf->render();
 
-// ---- OPTION A: Force download to user's mobile/PC ----
+// Stream to browser
 $dompdf->stream("order_$orderId.pdf", ["Attachment" => true]);
 
-// ---- OPTION B: Save to backend folder (server side) ----
+// Optional: Save copy to server
 $output = $dompdf->output();
 file_put_contents("invoices/order_$orderId.pdf", $output);
