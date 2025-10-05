@@ -1,8 +1,6 @@
 <?php
 require_once 'db.php'; // $db: PDO instance
 
-header('Content-Type: application/json');
-
 // Step 1: Collect User Inputs
 $userId        = isset($_REQUEST['userid'])      ? intval($_REQUEST['userid']) : 0;
 $paymentId     = isset($_REQUEST['paymentid'])   ? intval($_REQUEST['paymentid']) : 0;
@@ -197,7 +195,7 @@ try {
             'orderid'        => $orderid,
             'final_amount'   => $finalAmount,
             'trackid'        => $trackid,
-            'pdf_url'      => "http://127.0.0.1:8000/order-download/".urlencode($orderid)
+            'pdf_url'      => "http://10.101.250.98:8080/order-download/".urlencode($orderid)
         ]
     ]);
 } catch (Exception $e) {
