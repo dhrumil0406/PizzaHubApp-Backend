@@ -26,6 +26,8 @@ try {
             buildingName,
             streetArea,
             city,
+            latitude,
+            longitude,
             createdAt
         FROM addresses
         WHERE userid = :userid

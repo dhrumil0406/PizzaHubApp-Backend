@@ -29,6 +29,8 @@ $apartmentNo = isset($data['apartmentNo']) ? trim($data['apartmentNo']) : null;
 $building    = isset($data['buildingName']) ? trim($data['buildingName']) : null;
 $streetArea  = isset($data['streetArea']) ? trim($data['streetArea']) : null;
 $city        = trim($data['city']);
+$lat = trim($data['latitude'] ?? '');
+$lng = trim($data['longitude'] ?? '');
 
 try {
     // Check user exists
@@ -41,8 +43,8 @@ try {
 
     // Insert address
     $stmt = $db->prepare("
-        INSERT INTO addresses (userid, addressType, name, apartmentNo, buildingName, streetArea, city, createdAt)
-        VALUES (:userid, :addressType, :name, :apartmentNo, :buildingName, :streetArea, :city, NOW())
+        INSERT INTO addresses (userid, addressType, name, apartmentNo, buildingName, streetArea, city, latitude, longitude, createdAt)
+        VALUES (:userid, :addressType, :name, :apartmentNo, :buildingName, :streetArea, :city, :lat, :lng, NOW())
     ");
 
     $stmt->bindParam(':userid', $userid);
@@ -52,6 +54,8 @@ try {
     $stmt->bindParam(':buildingName', $building);
     $stmt->bindParam(':streetArea', $streetArea);
     $stmt->bindParam(':city', $city);
+    $stmt->bindParam(':lat', $lat);
+    $stmt->bindParam(':lng', $lng);
 
     if ($stmt->execute()) {
         respond('success', 'Address added successfully.');

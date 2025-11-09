@@ -19,7 +19,6 @@ try {
         SELECT 
             orderid,
             address,
-            zip,
             phoneno,
             discountedtotalprice,
             paymentmethod,
