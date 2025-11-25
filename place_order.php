@@ -4,6 +4,9 @@ require_once 'db.php'; // $db: PDO instance
 // Step 1: Collect User Inputs
 $userId        = isset($_REQUEST['userid'])      ? intval($_REQUEST['userid']) : 0;
 $paymentId     = isset($_REQUEST['paymentid'])   ? intval($_REQUEST['paymentid']) : 0;
+$transactionId = isset($_REQUEST['transactionid']) && $_REQUEST['transactionid'] !== ""  
+                  ? $_REQUEST['transactionid'] 
+                  : NULL;
 $addressId     = isset($_REQUEST['addressid'])   ? intval($_REQUEST['addressid']) : 0;
 $totalPrice    = isset($_REQUEST['totalprice'])  ? floatval($_REQUEST['totalprice']) : 0;
 $finalAmount   = isset($_REQUEST['finalamount']) ? floatval($_REQUEST['finalamount']) : 0;
@@ -125,8 +128,8 @@ try {
     // Step 7: Insert Order
     $stmt = $db->prepare("
         INSERT INTO orders 
-        (orderid, userid, fullname, email, addressid, address, zip, phoneno, totalfinalprice, discountedtotalprice, paymentid, paymentmethod, orderstatus, orderdate)
-        VALUES (?, ?, ?, ?, ?, ?, '000000', ?, ?, ?, ?, ?, 1, CURRENT_TIMESTAMP)
+        (orderid, userid, fullname, email, addressid, address, phoneno, totalfinalprice, discountedtotalprice, paymentid, paymentmethod, orderstatus, orderdate)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, CURRENT_TIMESTAMP)
     ");
     $stmt->execute([
         $orderid,
@@ -142,13 +145,15 @@ try {
         $paymentId // paymentmethod as integer
     ]);
 
+    $status = $paymentId == 1 ? "pending" : "completed";
+
     // Step 8: Insert Payment
     $stmt = $db->prepare("
         INSERT INTO payments 
         (userid, orderid, payment_method, transaction_id, amount, currency, status, created_at, updated_at)
-        VALUES (?, ?, ?, NULL, ?, 'INR', 'pending', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        VALUES (?, ?, ?, ?, ?, 'INR', ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     ");
-    $stmt->execute([$userId, $orderid, $paymentMethodText, $finalAmount]);
+    $stmt->execute([$userId, $orderid, $paymentMethodText, $transactionId, $finalAmount, $status]);
 
     // ✅ Get the last inserted paymentid
     $paymentInsertedId = $db->lastInsertId();
